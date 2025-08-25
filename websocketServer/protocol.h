@@ -1,5 +1,6 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+#pragma once
 
 #include <QJsonObject>
 #include <QString>
