@@ -2,7 +2,7 @@
 #define SOCKET_H
 
 #include <QObject>
-
+#include <QWebSocketServer>
 class Socket : public QObject
 {
     Q_OBJECT
@@ -14,11 +14,14 @@ signals:
 
 
 private slots:
-
+    void onNewConnection();
+    void onClientDisconnected();
+    void onTextMessageReceived(const QString& message);
 
 
 private:
-    QWeb
+    QWebSocketServer *m_server;
+    QMap<QUuid,QWebSocket*> m_clients;
 };
 
 #endif // SOCKET_H
