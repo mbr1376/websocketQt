@@ -20,6 +20,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
     qt_add_executable(websocketServer
         MANUAL_FINALIZATION
@@ -28,6 +29,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
         socket.h socket.cpp
         context.h context.cpp
         client.h client.cpp
+        clienthub.h clienthub.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET websocketServer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -49,6 +51,7 @@ endif()
 
 target_link_libraries(websocketServer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(websocketServer PRIVATE Qt6::Core  Qt6::WebSockets)
+target_link_libraries(websocketServer PRIVATE Qt6::Core)
 target_link_libraries(websocketServer PRIVATE Qt6::Core)
 target_link_libraries(websocketServer PRIVATE Qt6::Core)
 

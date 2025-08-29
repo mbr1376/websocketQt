@@ -1,5 +1,8 @@
 #include "socket.h"
 
+#include <QUuid>
+#include <QWebSocket>
+
 Socket::Socket(QObject *parent)
     : QObject{parent},
     m_server(new QWebSocketServer(QStringLiteral ("Server"),
@@ -18,9 +21,9 @@ void Socket::onNewConnection()
     m_clients[clientId] = clientSocket;
 
     connect(clientSocket, &QWebSocket::disconnected,
-            this, &MoonSocket::onClientDisconnected);
+            this, &Socket::onClientDisconnected);
     connect(clientSocket, &QWebSocket::textMessageReceived,
-            this, &MoonSocket::onTextMessageReceived);
+            this, &Socket::onTextMessageReceived);
 
     // می‌توانید پیام خوش‌آمدگویی یا Echo بفرستید
 }
