@@ -5,11 +5,7 @@
 #include <QUuid>
 #include <QVariant>
 #include <QWebSocket>
-class Parameter {
-public:
-    QString paramName;
-    QVariant value;
-};
+#include "protocol.h"
 class Client : public QObject
 {
     Q_OBJECT
