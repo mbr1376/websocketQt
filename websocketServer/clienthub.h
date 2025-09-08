@@ -9,7 +9,7 @@ class ClientHub : public Client
 public:
     explicit ClientHub(QObject *parent = nullptr);
 
-    QString getValue(qint64 id);
+    QString getValue(const QString &name, qint64 id);
 
 signals:
 };

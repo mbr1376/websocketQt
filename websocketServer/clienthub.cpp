@@ -6,7 +6,7 @@ ClientHub::ClientHub(QObject *parent)
 
 }
 
-QString ClientHub::getValue(qint64 id)
+QString ClientHub::getValue(const QString &name,  qint64 id)
 {
-    return "respnose" + QString::number(id);
+    return "Respnose: " + name + "->"+   QString::number(id);
 }
