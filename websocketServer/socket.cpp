@@ -1,7 +1,12 @@
 #include "socket.h"
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QUuid>
 #include <QWebSocket>
+
+#include "protocol.h"
 
 Socket::Socket(QObject *parent)
     : QObject{parent},
@@ -12,6 +17,13 @@ Socket::Socket(QObject *parent)
         connect(m_server,&QWebSocketServer::newConnection,this,&Socket::onNewConnection);
     }
 
+}
+
+Socket::~Socket()
+{
+    delete m_server;
+
+    m_clients.clear();
 }
 
 void Socket::onNewConnection()
@@ -25,7 +37,8 @@ void Socket::onNewConnection()
     connect(clientSocket, &QWebSocket::textMessageReceived,
             this, &Socket::onTextMessageReceived);
 
-    // می‌توانید پیام خوش‌آمدگویی یا Echo بفرستید
+    clientSocket->sendTextMessage(Protocol::getIdentityJson(clientId));
+
 }
 
 void Socket::onClientDisconnected()
@@ -41,5 +54,14 @@ void Socket::onClientDisconnected()
 
 void Socket::onTextMessageReceived(const QString &message)
 {
-
+    auto metodInfo = Protocol::getMethodInfo(message);
+    if (metodInfo.methodName == "getData"){
+        QVariant result = m_clientHub.getValue(metodInfo.params[0].paramName, metodInfo.params[0].value.toInt());
+        QString resultJson = Protocol::getResultJson(metodInfo.functionId,result);
+        auto clientSocket = m_clients[metodInfo.clientId];
+            if (clientSocket) {
+            clientSocket->sendTextMessage(resultJson);
+        }
+    }
 }
+
