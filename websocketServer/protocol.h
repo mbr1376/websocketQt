@@ -2,6 +2,8 @@
 #define PROTOCOL_H
 #pragma once
 
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QString>
 
@@ -46,6 +48,22 @@ struct Result
         r.value = obj["Value"].toVariant();
         r.functionId = QUuid(obj["FunctionId"].toString());
         return r;
+    }
+};
+struct Identity {
+    MessageType messageType = MessageType::Identity;
+    QUuid id;
+
+    QJsonObject toJson() const {
+        QJsonObject obj;
+        obj["MessageType"] = static_cast<int>(messageType);
+        obj["Id"] = id.toString();
+        return obj;
+    }
+    static Identity fromJson(const QJsonObject& obj) {
+        Identity i;
+        i.id = QUuid(obj["Id"].toString());
+        return i;
     }
 };
 
