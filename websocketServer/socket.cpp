@@ -16,6 +16,20 @@ Socket::Socket(QObject *parent)
     if (m_server->listen(QHostAddress::Any,12345)){
         connect(m_server,&QWebSocketServer::newConnection,this,&Socket::onNewConnection);
     }
+    connect(&m_clientHub,&ClientHub::sendDataRealTime,[this](const QString &metodName,
+            const QVector<Parameter> &params){
+        if (m_clients.count() > 0){
+            QMapIterator<QUuid,QWebSocket*> i(m_clients);
+            while (i.hasNext()) {
+                i.next();
+                QString json = Protocol::getMethodInfoJson(metodName,params);
+                if (i.value())
+                    i.value()->sendTextMessage(json);
+            }
+
+        }
+    });
+    m_clientHub.startRealTimeData();
 
 }
 
