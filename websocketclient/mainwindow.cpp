@@ -35,7 +35,7 @@ void MainWindow::on_btnConnect_clicked()
 void MainWindow::onReceivedMessage(QVariantList paramms)
 {
     foreach (auto param, paramms) {
-        ui->textBrowser->append("Parameter is :" + param.value<Parameter>().paramName);
+        ui->textBrowser->append("Parameter is :" + param.value<Parameter>().value.toString());
     }
 }
 
