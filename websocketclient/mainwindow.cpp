@@ -1,7 +1,11 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-
+/**
+ * @brief Construct a new Main Window:: Main Window object
+ * 
+ * @param parent 
+ */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -16,8 +20,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete websocketClient;
 }
-
-
 void MainWindow::on_btnConnect_clicked()
 {
     auto connected = websocketClient->Connect();

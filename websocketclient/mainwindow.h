@@ -7,16 +7,25 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
+/**
+ * @brief class mainwindow
+ * 
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Construct a new Main Window object
+     * 
+     * @param parent 
+     */
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
+
     void on_btnConnect_clicked();
 
     void on_btnDisconnected_clicked();

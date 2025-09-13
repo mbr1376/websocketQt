@@ -7,14 +7,22 @@
 #include <QUuid>
 #include <QVector>
 #include <QVariant>
-
+/**
+ * @brief messageType server 
+ * 
+ */
 enum MessageType{Identity=0,Result=1,CallFunction=2};
+/**
+ * @brief struct parametr
+ * get data as server paramName and value
+ */
 struct Parameter{
 public:
     QString paramName;
     QVariant value;
 };
 Q_DECLARE_METATYPE(Parameter)
+
 class WebSocketClient: public QObject
 {
     Q_OBJECT
