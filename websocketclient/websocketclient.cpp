@@ -14,7 +14,7 @@ WebSocketClient::WebSocketClient(const QUrl &url, QObject *parent):QObject(paren
     connect(&websocketClient, &QWebSocket::textMessageReceived, this, &WebSocketClient::onTextMessageReceived);
     connect(&websocketClient, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
             this, [&](QAbstractSocket::SocketError) {
-        qDebug() << "WebSocket error:" << websocketClient.errorString();
+        qWarning() << "WebSocket error:" << websocketClient.errorString();
     });
 }
 
@@ -36,7 +36,7 @@ bool WebSocketClient::Connect()
     });
 
     connect(&websocketClient, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), &connectingloop, [&](QAbstractSocket::SocketError) {
-        qDebug() << "WebSocket error:" << websocketClient.errorString();
+        qFatal() << "WebSocket error:" << websocketClient.errorString();
         success = false;
         connectingloop.quit();
     });
@@ -51,7 +51,7 @@ bool WebSocketClient::Disconnect()
         websocketClient.close(QWebSocketProtocol::CloseCodeNormal);
         return true;
     } catch (const std::exception &e) {
-        qDebug() << "WebSocket error:" << websocketClient.errorString();
+        qFatal() << "WebSocket error:" << websocketClient.errorString();
         return false;
     }
 }
@@ -83,7 +83,6 @@ void WebSocketClient::Invoke(QString methodName, QVector<Parameter>  parameters,
     InvoceJson.setObject(InvoceJsonObject);
     QString jsonStr = QJsonDocument(InvoceJsonObject).toJson(QJsonDocument::Indented);
     jsonStr = jsonStr.replace("\n","").replace(" ","");
-    qDebug() << jsonStr;
     if (websocketClient.state()== QAbstractSocket::SocketState::ConnectedState)
     {
         //websocketClient.resume();
@@ -120,20 +119,16 @@ void WebSocketClient::callMethod(const QString &methodName, const QVariantList &
 
 void WebSocketClient::onConnected()
 {
-    qDebug() << "WebSocket connected";
     this->state = QAbstractSocket::SocketState::ConnectedState;
-    //websocketClient.sendTextMessage(QStringLiteral("test"));
 }
 
 void WebSocketClient::onTextMessageReceived(QString message)
 {
-    qDebug() << "Message received:" << message;
-
     QJsonDocument jsonDoc = QJsonDocument::fromJson(message.toUtf8());
 
     // Check for parsing errors
     if (jsonDoc.isNull() || !jsonDoc.isObject()) {
-        qDebug() << "Invalid JSON format.";
+        qWarning() << "Invalid JSON format.";
         return ;
     }
 
@@ -145,7 +140,6 @@ void WebSocketClient::onTextMessageReceived(QString message)
     switch (messageType) {
         case Identity:{
             ClientId = QUuid(jsonObj.value("Id").toString());
-            qDebug() << "Client Id:" << ClientId;
             break;
         }
         case CallFunction:{

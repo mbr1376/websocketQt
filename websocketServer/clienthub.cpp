@@ -22,5 +22,5 @@ void ClientHub::startRealTimeData()
         emit sendDataRealTime("realTimeData",params);
     });
 
-    timer->start();
+    timer->start(1000);
 }
