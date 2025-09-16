@@ -51,11 +51,7 @@ endif()
 
 target_link_libraries(websocketServer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(websocketServer PRIVATE Qt6::Core  Qt6::WebSockets)
-target_link_libraries(websocketServer PRIVATE Qt6::Core)
-target_link_libraries(websocketServer PRIVATE Qt6::Core)
-target_link_libraries(websocketServer PRIVATE Qt6::Core)
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+target_link_libraries(websocketServer PRIVATE encrypt)
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)

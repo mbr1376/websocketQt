@@ -24,3 +24,4 @@ add_executable(WebSocketClientSample
 )
 
 target_link_libraries(WebSocketClientSample PRIVATE Qt6::Widgets Qt6::WebSockets)
+target_link_libraries(WebSocketClientSample PRIVATE encrypt)
