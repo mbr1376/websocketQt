@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "websocketclient.h"
 
+#include "websocketclient.h"
+#include "decrypthelper.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -33,6 +34,7 @@ private slots:
     void on_btnSend_clicked();
 
 private:
+    DecryptHelper dec;
     Ui::MainWindow *ui;
     WebSocketClient* websocketClient;
     void onReceivedMessage(QVariantList paramms);

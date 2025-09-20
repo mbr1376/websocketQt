@@ -37,7 +37,9 @@ void MainWindow::on_btnConnect_clicked()
 void MainWindow::onReceivedMessage(QVariantList paramms)
 {
     foreach (auto param, paramms) {
-        ui->textBrowser->append("Parameter is :" + param.value<Parameter>().value.toString());
+        Parameter p = param.value<Parameter>();
+        QString decryptedValue = dec.decrypt(p.value.toString());
+        ui->textBrowser->append("Parameter is :" + decryptedValue);
     }
 }
 
