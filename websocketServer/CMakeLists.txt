@@ -30,6 +30,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
         context.h context.cpp
         client.h client.cpp
         clienthub.h clienthub.cpp
+        encrypthelper.h encrypthelper.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET websocketServer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

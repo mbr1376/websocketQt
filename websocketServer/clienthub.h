@@ -6,6 +6,7 @@
 
 #include "client.h"
 #include "protocol.h"
+#include "encrypthelper.h"
 class ClientHub : public Client
 {
     Q_OBJECT
@@ -20,6 +21,7 @@ signals:
 private:
     QTimer *timer;
     int currentData{0};
+    EncryptHelper enc;
 };
 
 #endif // CLIENTHUB_H

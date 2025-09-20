@@ -17,8 +17,8 @@ void ClientHub::startRealTimeData()
     connect(timer, &QTimer::timeout, [this](){
         currentData++;
         QVector<Parameter> params;
-        params.append(Parameter{"paramsname","Data"});
-        params.append(Parameter{"value", currentData});
+        params.append(Parameter{enc.encrypt("paramsname"),enc.encrypt("Data")});
+        params.append(Parameter{enc.encrypt("value"), enc.encrypt(QString::number(currentData))});
         emit sendDataRealTime("realTimeData",params);
     });
 
