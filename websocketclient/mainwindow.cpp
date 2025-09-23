@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    websocketClient = new WebSocketClient(QUrl(QStringLiteral("ws://127.0.01:12345")));
+    websocketClient = new WebSocketClient(QUrl(QStringLiteral("wss://127.0.01:12345")));
 
     ui->setupUi(this);
 }

@@ -5,17 +5,46 @@
 #include <QJsonObject>
 #include <QUuid>
 #include <QWebSocket>
+#include <QSslCertificate>
+#include <QSslSocket>
+#include <QFile>
+#include <QSslKey>
 
 #include "protocol.h"
 
 Socket::Socket(QObject *parent)
     : QObject{parent},
+#ifdef USE_WSS
     m_server(new QWebSocketServer(QStringLiteral ("Server"),
-                                    QWebSocketServer::NonSecureMode,this))
+                                  QWebSocketServer::SecureMode, this))
+#else
+    m_server(new QWebSocketServer(QStringLiteral ("Server"),
+                                  QWebSocketServer::NonSecureMode, this))
+#endif
 {
+#ifdef USE_WSS
+    QFile certFile(QStringLiteral("wss/cert.pem"));
+    QFile keyFile(QStringLiteral("wss/key.pem"));
+    qDebug() << QSslSocket::sslLibraryBuildVersionString();
+    qDebug() << QSslSocket::sslLibraryVersionString();
+    qDebug() << "Supports SSL:" << QSslSocket::supportsSsl();
+    QSslConfiguration sslConfig;
+    if (certFile.open(QIODevice::ReadOnly) && keyFile.open(QIODevice::ReadOnly)) {
+        QSslCertificate cert(&certFile, QSsl::Pem);
+        QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem);
+        sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+        sslConfig.setLocalCertificate(cert);
+        sslConfig.setPrivateKey(key);
+        m_server->setSslConfiguration(sslConfig); // این خط را اضافه کنید
+    }
+    if (m_server->listen(QHostAddress::Any, 12345)) { // فقط دو آرگومان
+        connect(m_server, &QWebSocketServer::newConnection, this, &Socket::onNewConnection);
+    }
+#else
     if (m_server->listen(QHostAddress::Any,12345)){
         connect(m_server,&QWebSocketServer::newConnection,this,&Socket::onNewConnection);
     }
+#endif
     connect(&m_clientHub,&ClientHub::sendDataRealTime,[this](const QString &metodName,
             const QVector<Parameter> &params){
         if (m_clients.count() > 0){
