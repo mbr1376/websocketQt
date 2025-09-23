@@ -21,7 +21,6 @@ add_executable(WebSocketClientSample
   mainwindow.ui
   websocketclient.cpp
   websocketclient.h
-  decrypthelper.h decrypthelper.cpp
 )
 
 target_link_libraries(WebSocketClientSample PRIVATE Qt6::Widgets Qt6::WebSockets)
