@@ -75,3 +75,10 @@ install(TARGETS websocketServer
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(websocketServer)
 endif()
+
+add_custom_command(
+    TARGET websocketServer POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/wss
+            $<TARGET_FILE_DIR:websocketServer>/wss
+)

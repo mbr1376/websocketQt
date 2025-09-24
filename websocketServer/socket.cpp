@@ -9,7 +9,7 @@
 #include <QSslSocket>
 #include <QFile>
 #include <QSslKey>
-
+#include <QDir>
 #include "protocol.h"
 
 Socket::Socket(QObject *parent)
@@ -23,8 +23,8 @@ Socket::Socket(QObject *parent)
 #endif
 {
 #ifdef USE_WSS
-    QFile certFile(QStringLiteral("wss/cert.pem"));
-    QFile keyFile(QStringLiteral("wss/key.pem"));
+    QFile certFile(QDir::currentPath() + QStringLiteral("/wss/cert.pem"));
+    QFile keyFile(QDir::currentPath() + QStringLiteral("/wss/key.pem"));
     qDebug() << QSslSocket::sslLibraryBuildVersionString();
     qDebug() << QSslSocket::sslLibraryVersionString();
     qDebug() << "Supports SSL:" << QSslSocket::supportsSsl();
