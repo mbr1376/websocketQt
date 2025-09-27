@@ -6,6 +6,7 @@
 #include <QWebSocketServer>
 
 #include "clienthub.h"
+#include "logger.h"
 class Socket : public QObject
 {
     Q_OBJECT
@@ -27,6 +28,7 @@ private:
     QWebSocketServer *m_server;
     QMap<QUuid,QWebSocket*> m_clients;
     ClientHub m_clientHub;
+    Logger logger;
 
 };
 

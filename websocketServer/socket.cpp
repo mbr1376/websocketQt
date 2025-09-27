@@ -74,7 +74,7 @@ void Socket::onNewConnection()
     QWebSocket* clientSocket = m_server->nextPendingConnection();
     QUuid clientId = QUuid::createUuid();
     m_clients[clientId] = clientSocket;
-
+    logger.log("new connection" + clientId.toString());
     connect(clientSocket, &QWebSocket::disconnected,
             this, &Socket::onClientDisconnected);
     connect(clientSocket, &QWebSocket::textMessageReceived,
@@ -104,6 +104,8 @@ void Socket::onTextMessageReceived(const QString &message)
         auto clientSocket = m_clients[metodInfo.clientId];
             if (clientSocket) {
             clientSocket->sendTextMessage(resultJson);
+            logger.log("get message: " + metodInfo.methodName + ":" +
+                     metodInfo.params[0].paramName+"==>"+ metodInfo.params[0].value.toString() + metodInfo.clientId.toString() );
         }
     }
 }
