@@ -58,6 +58,8 @@ Socket::Socket(QObject *parent)
 
         }
     });
+    logger.setDateTimeFormat("yyyy/MM/dd hh:mm:ss");
+    logger.setFormatTemplate("{datetime} [{level}] ({action}) -> {message}");
     m_clientHub.startRealTimeData();
 
 }
@@ -74,7 +76,7 @@ void Socket::onNewConnection()
     QWebSocket* clientSocket = m_server->nextPendingConnection();
     QUuid clientId = QUuid::createUuid();
     m_clients[clientId] = clientSocket;
-    logger.log("new connection" + clientId.toString());
+    logger.log(Logger::Action::Process,"new connection" + clientId.toString(),Logger::Level::Info);
     connect(clientSocket, &QWebSocket::disconnected,
             this, &Socket::onClientDisconnected);
     connect(clientSocket, &QWebSocket::textMessageReceived,
@@ -104,8 +106,10 @@ void Socket::onTextMessageReceived(const QString &message)
         auto clientSocket = m_clients[metodInfo.clientId];
             if (clientSocket) {
             clientSocket->sendTextMessage(resultJson);
-            logger.log("get message: " + metodInfo.methodName + ":" +
-                     metodInfo.params[0].paramName+"==>"+ metodInfo.params[0].value.toString() + metodInfo.clientId.toString() );
+            logger.log(Logger::Action::Process,"get message: " + metodInfo.methodName + ":" +
+                     metodInfo.params[0].paramName+"==>"+ metodInfo.params[0].value.toString() + metodInfo.clientId.toString() ,
+                    Logger::Level::Info
+                        );
         }
     }
 }
