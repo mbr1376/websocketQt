@@ -1,12 +1,39 @@
 #include "logger.h"
 
-Logger::Logger(const QString& filename)
-    : m_logFile(filename), m_textStream(&m_logFile)
+Logger::Logger(const QString& filename, const QString& dbPath)
+    : m_dateTimeFormat("yyyy-MM-dd HH:mm:ss"),
+    m_formatTemplate("{datetime} [{level}] ({action}) {message}"),
+    m_minLevel(Level::Debug)
 {
-    if (m_logFile.open(QIODevice::Append | QIODevice::Text)) {
-
-        m_textStream.setEncoding(QStringConverter::Utf8);
+#ifdef USE_FILE_LOG
+    if (!filename.isEmpty()) {
+        m_logFile.setFileName(filename);
+        if (m_logFile.open(QIODevice::Append | QIODevice::Text)) {
+            m_textStream.setDevice(&m_logFile);
+            m_textStream.setEncoding(QStringConverter::Utf8);
+        }
     }
+#endif
+#ifdef USE_DB_LOG
+    m_dbEnabled = false;
+    if (!dbPath.isEmpty()) {
+        m_db = QSqlDatabase::addDatabase("QSQLITE");
+        m_db.setDatabaseName(dbPath);
+
+        if (m_db.open()) {
+            QSqlQuery query;
+            query.exec("CREATE TABLE IF NOT EXISTS logs ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                       "datetime TEXT, "
+                       "level TEXT, "
+                       "action TEXT, "
+                       "message TEXT)");
+            m_dbEnabled = true;
+        } else {
+            qWarning() << "DB Connection failed:" << m_db.lastError().text();
+        }
+    }
+#endif
 }
 
 
@@ -19,11 +46,33 @@ Logger::~Logger()
 
 void Logger::log(Action action, const QString& message, Level level)
 {
+    if (static_cast<int>(level) < static_cast<int>(m_minLevel)) {
+        return;
+    }
+
+    m_dateTime = QDateTime::currentDateTime();
+    QString datetime = m_dateTime.toString(m_dateTimeFormat);
+    QString levelStr = levelToString(level);
+    QString actionStr = actionToString(action);
+
+#ifdef USE_FILE_LOG
     if (m_logFile.isOpen()) {
-        m_dateTime = QDateTime::currentDateTime();
-        m_textStream << m_dateTime.toString("yyyy-MM-dd HH:mm:ss") << " - " << message << "\n";
+        QString logLine = m_formatTemplate;
+        logLine.replace("{datetime}", datetime);
+        logLine.replace("{level}", levelStr);
+        logLine.replace("{action}", actionStr);
+        logLine.replace("{message}", message);
+
+        m_textStream << logLine << "\n";
         m_textStream.flush();
     }
+#endif
+
+#ifdef USE_DB_LOG
+    if (m_dbEnabled) {
+        insertIntoDb(datetime, levelStr, actionStr, message);
+    }
+#endif
 }
 
 void Logger::setDateTimeFormat(const QString &format)
@@ -69,3 +118,22 @@ QString Logger::actionToString(Action action) const
     }
     return "UNKNOWN";
 }
+
+
+#ifdef USE_DB_LOG
+    void Logger::insertIntoDb(const QString& datetime, const QString& level,
+                              const QString& action, const QString& message)
+    {
+        QSqlQuery query;
+        query.prepare("INSERT INTO logs (datetime, level, action, message) VALUES (?, ?, ?, ?)");
+        query.addBindValue(datetime);
+        query.addBindValue(level);
+        query.addBindValue(action);
+        query.addBindValue(message);
+
+        if (!query.exec()) {
+            qWarning() << "Insert log failed:" << query.lastError().text();
+        }
+    }
+#endif
+
