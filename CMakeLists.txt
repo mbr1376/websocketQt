@@ -9,6 +9,27 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 option(USE_WSS "Enable WSS (WebSocket Secure)" OFF)
 option(USE_LOG "Enable Logging" ON)
+option(ENABLE_FILE_LOG "Enable logging to file" ON)
+option(ENABLE_DB_LOG "Enable logging to SQLite database" ON)
+
+
+
+add_subdirectory(websocketclient)
+add_subdirectory(websocketServer)
+add_subdirectory(encrypt)
+
+if(USE_LOG)
+     add_definitions(-DUSE_LOG)
+     message(STATUS "Logging is ENABLED")
+     add_subdirectory(log)
+
+else()
+        message(STATUS "Logging is DISABLED")
+endif()
+
+
+
+
 if(USE_WSS)
     add_definitions(-DUSE_WSS)
     message(STATUS "WSS (WebSocket Secure) is ENABLED")
@@ -16,13 +37,7 @@ else()
        message(STATUS "WSS (WebSocket Secure) is DISABLED")
 
 endif()
-add_subdirectory(websocketclient)
-add_subdirectory(websocketServer)
-add_subdirectory(encrypt)
-if(USE_LOG)
-     add_definitions(-DUSE_LOG)
-     message(STATUS "Logging is ENABLED")
-     add_subdirectory(log)
-else()
-        message(STATUS "Logging is DISABLED")
-endif()
+
+
+
+
