@@ -1,8 +1,9 @@
 #include "encrypthelper.h"
+#include <QtGlobal> // qgetenv
 
 EncryptHelper::EncryptHelper():
-    key("1234567890abcdef"),
-    iv("fedcba0987654321"),
+    key(qgetenv("WS_KEY").isEmpty() ? QByteArray("1234567890abcdef") : qgetenv("WS_KEY")),
+    iv(qgetenv("WS_IV").isEmpty() ? QByteArray("fedcba0987654321") : qgetenv("WS_IV")),
     aes(QAESEncryption::AES_128, QAESEncryption::CBC)
 {
 

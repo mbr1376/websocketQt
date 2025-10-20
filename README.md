@@ -79,7 +79,17 @@ From the `build/websocketServer` directory (or wherever your build output is):
 
 - All sensitive data sent from the server is **encrypted** using `EncryptHelper` (AES-128/CBC, base64).
 - The client **decrypts** incoming data using `DecryptHelper` with the same key and IV.
-- To change the encryption key/IV, edit them in `encrypthelper.cpp` and `decrypthelper.cpp` (must match on both sides).
+- To change the encryption key/IV, you can either edit them in `encrypthelper.cpp` and `decrypthelper.cpp` (must match on both sides),
+- or set environment variables `WS_KEY` and `WS_IV` before starting the apps. The code will use these variables if present and fall back to
+- the previous hard-coded defaults when they're not set.
+
+For fish shell (your default on macOS in this workspace), set them like:
+
+```fish
+set -x WS_KEY 1234567890abcdef
+set -x WS_IV fedcba0987654321
+./websocketServer
+```
 
 ---
 
