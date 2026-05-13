@@ -1,0 +1,3 @@
+[submodule "third-party/SimpleQtLogger"]
+	path = third-party/SimpleQtLogger
+	url = https://github.com/Dingola/SimpleQtLogger.git
