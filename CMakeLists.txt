@@ -17,6 +17,7 @@ option(ENABLE_DB_LOG "Enable logging to SQLite database" ON)
 add_subdirectory(websocketclient)
 add_subdirectory(websocketServer)
 add_subdirectory(encrypt)
+#add_subdirectory(third-party/SimpleQtLogger)
 
 if(USE_LOG)
      add_definitions(-DUSE_LOG)
