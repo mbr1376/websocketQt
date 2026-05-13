@@ -1,11 +1,28 @@
-
 #include <QApplication>
 #include <QTimer>
 #include "socket.h"
+#include <iostream>
+void printLogo()
+{
+    std::cout << "\033[36m";
+    std::cout << R"(
+
+ ███████╗███████╗██████╗ ██╗   ██╗███████╗██████╗
+ ██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗
+ ███████╗█████╗  ██████╔╝██║   ██║█████╗  ██████╔╝
+ ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██╔══╝  ██╔══██╗
+ ███████║███████╗██║  ██║ ╚████╔╝ ███████╗██║  ██║
+ ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝
+
+        QT WebSocket SERVER STARTED
+
+)" << std::endl;
+    std::cout << "\033[0m";
+}
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qDebug() << "start server";
+    printLogo();
     Socket server;
     return a.exec();
 }
